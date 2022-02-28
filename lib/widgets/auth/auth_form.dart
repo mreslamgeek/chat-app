@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'dart:io';
+
+import './users_image_picker.dart';
 
 class AuthForm extends StatefulWidget {
   final void Function(
     String email,
     String password,
     String usename,
+    File image,
     bool isLogin,
     BuildContext ctx,
   ) submitFn;
@@ -26,11 +30,27 @@ class _AuthFormState extends State<AuthForm> {
   String _userEmail = '';
   String _userName = '';
   String _userPassword = '';
+  File _userImageFile;
+
+  void _pickedImage(File image) {
+    _userImageFile = image;
+  }
 
   void _trySubmit() {
     // check if validators valid or not
     final isValid = _formKey.currentState.validate();
     FocusScope.of(context).unfocus();
+    //check if image is picked
+    if (_userImageFile == null && !_isLogin) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please pick an image'),
+          backgroundColor: Theme.of(context).errorColor,
+        ),
+      );
+      return;
+    }
+
     //now check if all validator return null
     if (isValid) {
       // go to every TextFormField and trigger onSaved
@@ -39,6 +59,7 @@ class _AuthFormState extends State<AuthForm> {
         _userEmail.trim(),
         _userPassword.trim(),
         _userName.trim(),
+        _userImageFile,
         _isLogin,
         context,
       );
@@ -58,6 +79,7 @@ class _AuthFormState extends State<AuthForm> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                if (!_isLogin) UserImagePicker(_pickedImage),
                 TextFormField(
                   //we use key here to hendle error that happend from re-arrenge elemts tree
                   key: ValueKey('email'),
