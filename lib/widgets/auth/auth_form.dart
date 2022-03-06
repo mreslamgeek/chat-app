@@ -83,6 +83,9 @@ class _AuthFormState extends State<AuthForm> {
                 TextFormField(
                   //we use key here to hendle error that happend from re-arrenge elemts tree
                   key: ValueKey('email'),
+                  autocorrect: false,
+                  textCapitalization: TextCapitalization.none,
+                  enableSuggestions: false,
                   validator: (value) {
                     if (value.isEmpty || !value.contains('@')) {
                       return 'Please enter valid email address.';
@@ -98,6 +101,9 @@ class _AuthFormState extends State<AuthForm> {
                 if (!_isLogin)
                   TextFormField(
                     key: ValueKey('username'),
+                    autocorrect: true,
+                    textCapitalization: TextCapitalization.words,
+                    enableSuggestions: false,
                     validator: (value) {
                       if (value.isEmpty || value.length < 4) {
                         return 'Please enter at least 4 characters';
